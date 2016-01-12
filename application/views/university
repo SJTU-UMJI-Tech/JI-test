@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><!--equivalence university's courses-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?=$university['university_name']?> - Course Equivalencies - UM-SJTU JI</title>
+<link href="/ji_style/common.css" type="text/css" rel="stylesheet" />
+<link href="/ji_style/equivalence.css" type="text/css" rel="stylesheet" />
+<script src="/ji_js/jquery-2.1.4.min.js" language="javascript" type="text/javascript"></script>
+</head>
+
+<body id="equivalence-index">
+<div class="top">
+	<?php include_once('top.php');?>
+</div>
+<div class="main">
+	<div class="title"><h1><a href="/equivalence/index">Course Equivalencies</a></h1><form action="/equivalence/search" method="post"><span id="search">SEARCH</span><input name="search" placeholder="输入任意关键词"  type="text" /></form></div>
+    <div class="courses">
+    	<div class="descript"><span class="left"><b><?=$university['university_name']?></b><i>Location:&nbsp;&nbsp;<?=$university['university_city']?>/<?=$university['university_country']?></i></span><span class="right">UM-SJTU Joint Institute</span></div>
+        <li class="nav" id="nav">
+                <div style="clear:both; font-weight:bold;">
+                    <span style="width:100px" onclick="CourseOrder('course_department','asc','<?=$university['university_id']?>')">Dept.</span><span style="width:120px" onclick="CourseOrder('course_code','asc','<?=$university['university_id']?>')">Code</span><span style="width:120px" onclick="CourseOrder('course_name','asc','<?=$university['university_id']?>')">Title</span><span style="width: 60px" onclick="CourseOrder('course_credits','asc','<?=$university['university_id']?>')">Credits</span><span style="width:100px; border-right:1px solid #999" onclick="CourseOrder('course_language','asc','<?=$university['university_id']?>')">Language</span><span style="width:200px" onclick="CourseOrder('ji_code','asc','<?=$university['university_id']?>')">&nbsp;&nbsp;JI Subject</span><span style="width:80px" onclick="CourseOrder('ji_category','asc','<?=$university['university_id']?>')">Catalog</span><span style="width:60px" onclick="CourseOrder('ji_credits','asc','<?=$university['university_id']?>')">Credits</span><span style="width:120px" class="right" onclick="CourseOrder('course_starttime','asc','<?=$university['university_id']?>')">Effective Date</span><span style="width:100px" class="right" onclick="CourseOrder('course_endtime','asc','<?=$university['university_id']?>')">Expiry Date</span>
+                </div>
+        </li>
+        <div class="list" id="list">
+        <?php foreach($courses as $c){?>
+        <li>
+                <div style="clear:both">
+                    <span style="width:100px" title="<?=$c->course_id?>"><!--<?php if($c->course_top == 1){echo '↑&nbsp;&nbsp';}?>--><?=$c->course_department?>&nbsp;</span><span style="width:120px"><?=$c->course_code?></span><span style="width:120px"><?=$c->course_name?>&nbsp;</span><span style="width: 60px"><?php if($c->course_credits!=0){echo $c->course_credits;}?>&nbsp;</span><span style="width:100px; border-right:1px solid #999"><?=$c->course_language?>&nbsp;</span><span style="width:200px; margin-left:5px;" title="<?=$c->ji_code?>"><?=$c->ji_category?>&nbsp;<br /><?=$c->ji_remarks?></span><span style="width:80px">&nbsp;<?=$c->ji_code?>&nbsp;</span><span style="width:60px"><?php if($c->ji_credits!=0){echo $c->ji_credits;}?>&nbsp;</span><span style="width:120px"><?=$c->course_starttime?>&nbsp;</span><span style="width:100px" class="right p"><p>Courses can only be transferred for those who enrolled BEFORE (not including) the expiry date or semester. </p><?=$c->course_endtime?>&nbsp;</span>
+                </div>
+        </li>
+        <?php }?>
+        </div>
+    </div>
+<div class="h20 clear"></div>
+<div class="remarks"><?=$university['university_remarks']?></div>
+</div>
+
+<?php include("footer.php");?>
+<script type="text/javascript">
+
+$(document).ready(
+	function(){
+		$('.list').find('li:odd').css('background-color','#fff');
+		$('.list li').hover(function(){$(this).find('p').css('display','block');},function(){$(this).find('p').css('display','none');})
+		$('#search').click(function(){
+			$('form').submit();
+		});
+	}
+	
+);
+function CourseOrder(order,direction,id){//调用排序的课程
+	if(direction == "asc"){
+		var neir=  document.getElementById("nav").innerHTML;
+		neir=neir.replace(/asc/g,"desc");
+		document.getElementById("nav").innerHTML=neir;
+	}else if(direction == 'desc'){
+		var neir=  document.getElementById("nav").innerHTML;
+		neir=neir.replace(/desc/g,"asc");
+		document.getElementById("nav").innerHTML=neir;
+	}
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp=new XMLHttpRequest();
+	}
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			document.getElementById("list").innerHTML=xmlhttp.responseText;
+		}
+	}
+	xmlhttp.open("GET","/equivalence/university/order/"+order+"/"+direction+"/"+id,true);
+	xmlhttp.send();
+}
+</script>
+<script type="text/javascript">
+function menuFixed(id){
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+    
+    window.onscroll = function(){
+        changePos(id,_getHeight);
+    }
+}
+function changePos(id,height){
+    var obj = document.getElementById(id);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if(scrollTop < height){
+        obj.style.position = 'relative';
+    }else{
+        obj.style.position = 'fixed';
+    }
+}
+window.onload = function(){
+    menuFixed('nav');
+}
+</script>
+</body>
+</html>
