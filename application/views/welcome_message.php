@@ -1,5 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
+		$db=@new mysqli("202.120.46.151:3306","ta","ta123456","ta");
+		if(mysqli_connect_errno())
+		{
+			echo "fail!</br>\n";
+			echo mysqli_connect_error();
+		}
+		else
+		{
+			echo "success!";
+			$sql="INSERT INTO test(test) VALUES(123)";
+			$rs=$db->query($sql);
+
+		}
+
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
