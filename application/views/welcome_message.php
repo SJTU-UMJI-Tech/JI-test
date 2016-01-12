@@ -12,7 +12,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			echo "success!";
 			$sql="INSERT INTO test(test) VALUES(123)";
 			$rs=$db->query($sql);
-
+			if(!$rs)
+			{
+				echo "insert fail";
+			}
+			else
+			{
+				echo "success!";
+			}
+			$db->close();
 		}
 
 ?><!DOCTYPE html>
