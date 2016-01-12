@@ -19,7 +19,14 @@ class Welcome extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	public function index()
-	{
+	{		
+		
+		$this->load->database();
+		$res=$this->db->get('test');
+		foreach($res->result() as $item){
+			echo $item->id;
+			echo '<br>';
+		}
 		$this->load->view('welcome_message');
 	}
 }
