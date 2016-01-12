@@ -1,0 +1,48 @@
+<?php
+session_start();//启动session
+defined('BASEPATH') OR exit('No direct script access allowed');
+//aruba无线登录认证
+class Wlan extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('Mcn');
+	}
+	public function registration(){
+		$this->load->view('wlan/registration',$data);
+	}
+	public function save(){
+		$save = array(
+			'user_id' => $_SESSION['jaccount']['id'],
+			'user_password' => md5($this->input->post('password')),
+			'user_jaccount' => $_SESSION['jaccount']['uid'],
+			'user_name' => $_SESSION['jaccount']['chinesename'],
+			'user_institute' => $_SESSION['jaccount']['dept']
+		);
+		$this->db->insert('ji_student',$save);
+		if($_SESSION['url']){
+			echo "<script language='javascript'>alert('Regist successfully！'); window.location.href='http://www.baidu.com';</script>";
+		}else{
+			header("Location:/wlan/registration");
+		}
+	}
+	public function success(){
+		$this->load->view('wlan/success',$data);
+	}
+	public function forget(){
+		$this->load->view('wlan/forget',$data);
+	}
+	public function update(){
+		$save = array(
+			'user_id' => $_SESSION['jaccount']['id'],
+			'user_password' => md5($this->input->post('password'))
+		);
+		$this->db->where('user_id',$_SESSION['jaccount']['id']);
+		$this->db->update('ji_student',$save);
+		if($_SESSION['url']){
+			echo "<script language='javascript'>alert('Update successfully！'); window.location.href='http://www.baidu.com';</script>";
+		}else{
+			header("Location:/wlan/registration");
+		}
+	}
+}
